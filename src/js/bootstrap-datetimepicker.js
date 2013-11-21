@@ -54,7 +54,7 @@
       this.pickTime = options.pickTime;
       this.isInput = this.$element.is('input');
       this.component = false;
-      if (this.$element.find('.input-append') || this.$element.find('.input-prepend'))
+      if (this.$element.find('.input-append').length || this.$element.find('.input-prepend').length)
           this.component = this.$element.find('.add-on');
       this.format = options.format;
       if (!this.format) {
@@ -67,15 +67,19 @@
         icon = this.component.find('i');
       }
       if (this.pickTime) {
-        if (icon && icon.length) this.timeIcon = icon.data('time-icon');
+        if (icon && icon.length){ 
+          this.timeIcon = icon.data('time-icon');
+          icon.addClass(this.timeIcon);
+        }
         if (!this.timeIcon) this.timeIcon = 'icon-time';
-        icon.addClass(this.timeIcon);
       }
       if (this.pickDate) {
-        if (icon && icon.length) this.dateIcon = icon.data('date-icon');
+        if (icon && icon.length){
+          this.dateIcon = icon.data('date-icon');
+          icon.removeClass(this.timeIcon);
+          icon.addClass(this.dateIcon);
+        }
         if (!this.dateIcon) this.dateIcon = 'icon-calendar';
-        icon.removeClass(this.timeIcon);
-        icon.addClass(this.dateIcon);
       }
       this.widget = $(getTemplate(this.timeIcon, options.pickDate, options.pickTime, options.pick12HourFormat, options.pickSeconds, options.collapse)).appendTo('body');
       this.minViewMode = options.minViewMode||this.$element.data('date-minviewmode')||0;
@@ -981,7 +985,8 @@
       if (this.isInput) {
         this.$element.on({
           'focus': $.proxy(this.show, this),
-          'change': $.proxy(this.change, this)
+          'change': $.proxy(this.change, this),
+          'blur': $.proxy(this.hide, this)
         });
         if (this.options.maskInput) {
           this.$element.on({
